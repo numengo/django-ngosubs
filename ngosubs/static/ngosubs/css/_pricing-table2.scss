@@ -1,0 +1,136 @@
+$headerBg: #0f3783;
+$cardHeaderBg: #0147cd;
+$purchaseBtnColor: #22c091;
+$borderColor: #e3e3e3;
+
+@mixin boxShadow {
+  box-shadow: 0 2px 40px 0 rgba(168, 168, 168, 0.21);
+}
+
+body {
+  font-family: 'Karla', sans-serif;
+}
+.pricing-table-header {
+  background-color: $headerBg;
+  color: #fff;
+  padding-top: 129px;
+  padding-bottom: 110px;
+}
+.pricing-table-title {
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+.pricing-plans-tab {
+  justify-content: center;
+  .list-group-item-action {
+    width: auto;
+    border: solid 1px #fff;
+    background-color: #fff;
+    color: #082357;
+    font-size: 14px;
+
+    &.active {
+      background-color: $headerBg;
+      color: #fff;
+    }
+  }
+}
+
+.pricing-tab-content {
+  margin-top: -60px;
+
+  .tab-pane.active {
+    animation: slide-down 0.6s ease-in-out;
+  }
+}
+
+@keyframes slide-down {
+  0% { opacity:0; transform: translateY(5%); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.pricing-card {
+  border: none;
+  border-radius: 4px;
+  margin-bottom: 28px;
+  transition: all 0.6s;
+
+  .card-header {
+    background-color: $cardHeaderBg;
+    color: #fff;
+    padding-top: 40px;
+    padding-bottom: 36px;
+  }
+
+  .card-body {
+    padding: 22px 35px 27px;
+  }
+}
+
+.pricing-plan {
+
+  &-title {
+    font-size: 20px;
+    color: inherit;
+    margin-bottom: 0;
+    font-weight: normal;
+  }
+
+  &-cost {
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  &-features {
+    list-style: none;
+    padding-left: 0;
+    color: #303132;
+    font-size: 14px;
+    line-height: 2.86;
+    margin-bottom: 16px;
+    li {
+      border-bottom: 1px solid $borderColor;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+
+  &-purchase-btn {
+    color: #fff;
+    background-color: $purchaseBtnColor;
+    border-color: $purchaseBtnColor;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 13px 20px;
+    border-radius: 6px;
+    transition: all 0.4s;
+    position: relative;
+
+    &:hover {
+      border: 1px solid $purchaseBtnColor;
+      background-color: #fff;
+      color: $purchaseBtnColor;
+    }
+  }
+}
+
+.pricing-table-footer {
+  padding-top: 72px;
+  padding-bottom: 71px;
+  text-align: center;
+  color: #a5a5a5;
+  font-size: 16px;
+
+  a {
+    color: inherit;
+    transition: all 0.4s ease;
+
+    &:hover {
+      color: #333;
+      text-decoration: none;
+    }
+  }
+}
