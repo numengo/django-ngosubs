@@ -1,129 +1,8 @@
-"""Models for the Flexible Subscriptions app."""
-from datetime import timedelta
-from uuid import uuid4
-
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group
-from django.core.validators import MinValueValidator
-from django.db import models
+from shop.money.fields import MoneyField
 from django.utils.translation import gettext_lazy as _
-from parler.models import TranslatableModelMixin, TranslatedFieldsModel, TranslatedFields
-from parler.fields import TranslatedField
-from shop.money.fields import MoneyField, MultipleCurrenciesField
+from django.db import models
 
-from ngomm.models.instances import EntityNode
-from ngoutils.managers.model_builder import DjangoModelBuilder
-from ngoutils.models import DjangoModelNodeAbstractBase, django_model_node_registry
-from ngomm_cms.models.subscriptions import SubscriptionPlanNode, SubscriptionPlanSetNode
-
-# Convenience references for units for plan recurrence billing
-# ----------------------------------------------------------------------------
-ONCE = '0'
-SECOND = '1'
-MINUTE = '2'
-HOUR = '3'
-DAY = '4'
-WEEK = '5'
-MONTH = '6'
-YEAR = '7'
-RECURRENCE_UNIT_CHOICES = (
-    (ONCE, 'once'),
-    (SECOND, 'second'),
-    (MINUTE, 'minute'),
-    (HOUR, 'hour'),
-    (DAY, 'day'),
-    (WEEK, 'week'),
-    (MONTH, 'month'),
-    (YEAR, 'year'),
-)
-
-
-class PlanTag(models.Model):
-    """A tag for a subscription plan."""
-    tag = models.CharField(
-        help_text=_('the tag name'),
-        max_length=64,
-        unique=True,
-    )
-
-    class Meta:
-        ordering = ('tag',)
-
-    def __str__(self):
-        return self.tag
-
-
-class SubscriptionPlan(models.Model, TranslatableModelMixin):
-    """Details for a subscription plan."""
-    id = models.UUIDField(
-        default=uuid4,
-        editable=False,
-        primary_key=True,
-        verbose_name='ID',
-    )
-    plan_name = models.CharField(
-        help_text=_('the name of the subscription plan'),
-        max_length=128,
-    )
-    slug = models.SlugField(
-        blank=True,
-        help_text=_('slug to reference the subscription plan'),
-        max_length=128,
-        null=True,
-        unique=True,
-    )
-    plan_description = TranslatedField()
-
-    group = models.ForeignKey(
-        Group,
-        blank=True,
-        help_text=_('the Django auth group for this plan'),
-        null=True,
-        on_delete=models.SET_NULL,
-        related_name='plans',
-    )
-
-    tags = models.ManyToManyField(
-        PlanTag,
-        blank=True,
-        help_text=_('any tags associated with this plan'),
-        related_name='plans',
-    )
-
-    grace_period = models.PositiveIntegerField(
-        default=0,
-        help_text=_(
-            'how many days after the subscription ends before the '
-            'subscription expires'
-        ),
-    )
-
-    multilingual = TranslatedFields(
-        plan_description=models.CharField(
-            blank=True,
-            help_text=_('a description of the subscription plan'),
-            max_length=512,
-            null=True,
-        ),
-    )
-
-    class Meta:
-        ordering = ('plan_name',)
-        permissions = (
-            ('subscriptions', 'Can interact with subscription details'),
-        )
-
-    def __str__(self):
-        return self.plan_name
-
-    def display_tags(self):
-        """Displays tags as a string (truncates if more than 3)."""
-        if self.tags.count() > 3:
-            return '{}, ...'.format(
-                ', '.join(tag.tag for tag in self.tags.all()[:3])
-            )
-
-        return ', '.join(tag.tag for tag in self.tags.all()[:3])
+from .._models import *
 
 
 class PlanCost(models.Model):
@@ -163,14 +42,10 @@ class PlanCost(models.Model):
         decimal_places=4,
         help_text=_('the cost per recurrence of the plan')
     )
-    currency = models.CharField(
-        max_length=7,
-        editable=False,
-        help_text=_("Currency in which this order was concluded"),
-    )
 
     class Meta:
         ordering = ('recurrence_unit', 'recurrence_period', 'cost',)
+
 
     @property
     def display_recurrent_unit_text(self):
@@ -343,108 +218,11 @@ class SubscriptionTransaction(models.Model):
         max_digits=19,
         null=True,
     )
+    currency = models.CharField(
+        max_length=7,
+        editable=False,
+        help_text=_("Currency in which this order was concluded"),
+    )
 
     class Meta:
         ordering = ('date_transaction', 'user',)
-
-
-class PlanList(models.Model, TranslatableModelMixin):
-    """Model to record details of a display list of SubscriptionPlans."""
-    slug = models.SlugField(
-        blank=True,
-        help_text=_('slug to reference the subscription plan list'),
-        max_length=128,
-        null=True,
-        unique=True,
-    )
-    multilingual = TranslatedFields(
-        title=models.TextField(
-            blank=True,
-            help_text=_('title to display on the subscription plan list page'),
-            null=True,
-        ),
-        subtitle=models.TextField(
-            blank=True,
-            help_text=_('subtitle to display on the subscription plan list page'),
-            null=True,
-        ),
-        header=models.TextField(
-            blank=True,
-            help_text=_('header text to display on the subscription plan list page'),
-            null=True,
-        ),
-        footer=models.TextField(
-            blank=True,
-            help_text=_('header text to display on the subscription plan list page'),
-            null=True,
-        )
-    )
-    active = models.BooleanField(
-        default=True,
-        help_text=_('whether this plan list is active or not.'),
-    )
-
-    def __str__(self):
-        return self.title
-
-
-class PlanListDetail(models.Model, TranslatableModelMixin):
-    """Model to add additional details to plans when part of PlanList."""
-    plan = models.ForeignKey(
-        SubscriptionPlan,
-        on_delete=models.CASCADE,
-        related_name='plan_list_details',
-    )
-    plan_list = models.ForeignKey(
-        PlanList,
-        on_delete=models.CASCADE,
-        related_name='plan_list_details',
-    )
-
-    multilingual = TranslatedFields(
-        html_content=models.TextField(
-            blank=True,
-            help_text=_('HTML content to display for plan'),
-            null=True,
-        ),
-        subscribe_button_text=models.CharField(
-            blank=True,
-            default='Subscribe',
-            max_length=128,
-            null=True,
-        ),
-    )
-    order = models.PositiveIntegerField(
-        default=1,
-        help_text=_('Order to display plan in (lower numbers displayed first)'),
-    )
-
-    def __str__(self):
-        return 'Plan List {} - {}'.format(
-            self.plan_list, self.plan.plan_name
-        )
-
-
-DjangoModelBuilder.register('https://numengo.org/django-models#/$defs/auth/$defs/Group')(Group)
-
-GroupNode = EntityNode.make_class_from_model_uri('https://numengo.org/django-models#/$defs/auth/$defs/Group', module=__name__)
-
-@django_model_node_registry.register()
-class DjangoGroupNode(DjangoModelNodeAbstractBase):
-    _object_node = GroupNode
-    _django_model = Group
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
-
-
-@django_model_node_registry.register()
-class DjangoSubscriptionPlanNode(DjangoModelNodeAbstractBase):
-    _object_node = SubscriptionPlanNode
-    _django_model = SubscriptionPlan
-    plan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE)
-
-
-@django_model_node_registry.register()
-class DjangoSubscriptionPlanSetNode(DjangoModelNodeAbstractBase):
-    _object_node = SubscriptionPlanSetNode
-    _django_model = PlanList
-    product = models.ForeignKey(PlanList, on_delete=models.CASCADE)

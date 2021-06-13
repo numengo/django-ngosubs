@@ -879,6 +879,7 @@ class SubscribeView(LoginRequiredMixin, abstract.TemplateView):
             subscription=subscription.subscription,
             date_transaction=transaction_date,
             amount=subscription.subscription.cost,
+            currency=subscription.subscription.cost.currency,  # CRN, to validate
         )
 
 
