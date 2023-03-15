@@ -12,9 +12,9 @@ from parler.fields import TranslatedField
 from shop.money.fields import MoneyField, MultipleCurrenciesField
 
 from ngomm.models.instances import EntityNode
-from ngoutils.managers.model_builder import DjangoModelBuilder
+from ngoutils.managers.model_builder import django_model_builder
 from ngoutils.models import DjangoModelNodeAbstractBase, django_model_node_registry
-from ngomm_cms.models.subscriptions import SubscriptionPlanNode, SubscriptionPlanSetNode
+from ngomm_cms.models.subscriptions import SubscriptionPlanNode, SubscriptionPlanListNode
 
 # Convenience references for units for plan recurrence billing
 # ----------------------------------------------------------------------------
@@ -425,26 +425,4 @@ class PlanListDetail(models.Model, TranslatableModelMixin):
         )
 
 
-DjangoModelBuilder.register('https://numengo.org/django-models#/$defs/auth/$defs/Group')(Group)
-
-GroupNode = EntityNode.make_class_from_model_uri('https://numengo.org/django-models#/$defs/auth/$defs/Group', module=__name__)
-
-@django_model_node_registry.register()
-class DjangoGroupNode(DjangoModelNodeAbstractBase):
-    _object_node = GroupNode
-    _django_model = Group
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
-
-
-@django_model_node_registry.register()
-class DjangoSubscriptionPlanNode(DjangoModelNodeAbstractBase):
-    _object_node = SubscriptionPlanNode
-    _django_model = SubscriptionPlan
-    plan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE)
-
-
-@django_model_node_registry.register()
-class DjangoSubscriptionPlanSetNode(DjangoModelNodeAbstractBase):
-    _object_node = SubscriptionPlanSetNode
-    _django_model = PlanList
-    product = models.ForeignKey(PlanList, on_delete=models.CASCADE)
+django_model_builder.register('https://numengo.org/django-models#/$defs/auth/$defs/Group')(Group)

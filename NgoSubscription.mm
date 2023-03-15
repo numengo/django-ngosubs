@@ -26,7 +26,7 @@
 <attribute NAME="keywords" VALUE="mindmap, django-cms, django, django-shop, freeplane, freemind"/>
 <attribute NAME="license" VALUE="MIT"/>
 <hook NAME="MapStyle">
-    <properties fit_to_viewport="false" show_icon_for_attributes="true" show_note_icons="true"/>
+    <properties show_icon_for_attributes="true" fit_to_viewport="false" show_note_icons="true"/>
 
 <map_styles>
 <stylenode LOCALIZED_TEXT="styles.root_node" STYLE="oval" UNIFORM_SHAPE="true" VGAP_QUANTITY="24.0 pt">
@@ -209,7 +209,7 @@
 </node>
 </node>
 </node>
-<node TEXT="SubscriptionPlanSetNode" ID="ID_1366433824" CREATED="1623141926891" MODIFIED="1623142624355">
+<node TEXT="SubscriptionPlanListNode" ID="ID_1366433824" CREATED="1623141926891" MODIFIED="1625602112990">
 <node TEXT="extends" ID="ID_696670002" CREATED="1623141750031" MODIFIED="1623141751996">
 <node TEXT="ngomm.instances.EntityNode" ID="ID_1556775365" CREATED="1621541508322" MODIFIED="1621541535693"/>
 <node TEXT="ngomm.mixins.TranslatedNode" ID="ID_483250256" CREATED="1621541536963" MODIFIED="1621541564919"/>
@@ -237,12 +237,10 @@
 <node TEXT="plans" ID="ID_1847496793" CREATED="1623142507755" MODIFIED="1623142533511">
 <icon BUILTIN="very_positive"/>
 <node TEXT="ngosubs.SubscriptionPlanNode" ID="ID_1541928772" CREATED="1623142553046" MODIFIED="1623142593793"/>
-<node TEXT="ngomm.mixins.AbstractNode" ID="ID_468534434" CREATED="1623393994817" MODIFIED="1623394036409"/>
 </node>
-<node TEXT="plansets" ID="ID_1478798204" CREATED="1623142517873" MODIFIED="1623142533511">
+<node TEXT="plan_lists" ID="ID_1478798204" CREATED="1623142517873" MODIFIED="1625602218387">
 <icon BUILTIN="very_positive"/>
-<node TEXT="ngosubs.SubscriptionPlanSetNode" ID="ID_825037267" CREATED="1623142553046" MODIFIED="1623142604760"/>
-<node TEXT="ngomm.mixins.AbstractNode" ID="ID_1148367605" CREATED="1623393994817" MODIFIED="1623394036409"/>
+<node TEXT="ngosubs.SubscriptionPlanListNode" ID="ID_825037267" CREATED="1623142553046" MODIFIED="1625602161582"/>
 </node>
 </node>
 </node>
@@ -263,7 +261,6 @@
     <pre style="background-color: #2b2b2b; color: #a9b7c6; font-family: Menlo; font-size: 9.0pt">multilingual = TranslatedFields(<br/>    <span style="color: #aa4926"><font color="#aa4926">description</font></span>=HTMLField(<br/>        <span style="color: #aa4926"><font color="#aa4926">verbose_name</font></span>=_(<span style="color: #6a8759"><font color="#6a8759">&quot;Description&quot;</font></span>)<span style="color: #cc7832"><font color="#cc7832">,<br/></font></span><font color="#cc7832"><span style="color: #cc7832">        </span></font><span style="color: #aa4926"><font color="#aa4926">configuration</font></span>=<span style="color: #6a8759"><font color="#6a8759">'CKEDITOR_SETTINGS_DESCRIPTION'</font></span><span style="color: #cc7832"><font color="#cc7832">,<br/></font></span><font color="#cc7832"><span style="color: #cc7832">        </span></font><span style="color: #aa4926"><font color="#aa4926">help_text</font></span>=_(<span style="color: #6a8759"><font color="#6a8759">&quot;Full description used in the catalog's detail view of Smart Phones.&quot;</font></span>)<span style="color: #cc7832"><font color="#cc7832">,<br/></font></span><font color="#cc7832"><span style="color: #cc7832">    </span></font>)<span style="color: #cc7832"><font color="#cc7832">,<br/></font></span>)</pre>
   </body>
 </html>
-
 </richcontent>
 </node>
 </node>
